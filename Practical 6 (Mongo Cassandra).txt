@@ -1,0 +1,189 @@
+Mongodb
+1. Using the Database
+This command selects the social database to work within.
+use social;
+
+2. Creating Collections
+These commands create users and posts collections in the social database.
+db.createCollection("users");
+db.createCollection("posts");
+
+3. Inserting Users
+These commands insert two documents into the users collection for john_doe and jane_doe.
+db.users.insertOne({
+    user_id: new ObjectId(),
+    username: 'john_doe',
+    email: 'john@example.com',
+    created_at: new Date()
+});
+
+db.users.insertOne({
+    user_id: new ObjectId(),
+    username: 'jane_doe',
+    email: 'jane@example.com',
+    created_at: new Date()
+});
+
+4. Querying Users by Username
+These commands query the users collection for the document with the specified username.
+db.users.findOne({ username: 'john_doe' });
+db.users.findOne({ username: 'jane_doe' });
+
+5. Inserting Posts
+These commands insert posts into the posts collection for john_doe and jane_doe.
+// Inserting posts for John Doe
+db.posts.insertOne({
+    post_id: new ObjectId(),
+    user_id: ObjectId("66fed07edd9a024600924fd0"), // John Doe's ObjectId
+    content: 'Hello World!',
+    created_at: new Date()
+});
+db.posts.insertOne({
+    post_id: new ObjectId(),
+    user_id: ObjectId("66fed07edd9a024600924fd0"), // John Doe's ObjectId
+    content: 'Cassandra is great!',
+    created_at: new Date()
+});
+// Inserting a post for Jane Doe
+db.posts.insertOne({
+    post_id: new ObjectId(),
+    user_id: ObjectId("66fed07edd9a024600924fd2"), // Jane Doe's ObjectId
+    content: 'Enjoying the sunny day!',
+    created_at: new Date()
+});
+
+6. Querying All Users
+This command retrieves all documents from the users collection.
+db.users.find({});
+
+7. Querying a Specific User
+This command retrieves the full document of john_doe from the users collection.
+db.users.findOne({ username: 'john_doe' });
+
+8. Querying Posts by User ID
+These commands retrieve all posts created by john_doe and jane_doe respectively.
+// Query to find posts for John Doe
+db.posts.find({ user_id: ObjectId("66fed07edd9a024600924fd0") });
+// Query to find posts for Jane Doe
+db.posts.find({ user_id: ObjectId("66fed07edd9a024600924fd2") });
+
+9. Querying by Post ID
+This command retrieves a specific post using the post_id.
+// Query for the post with content 'Hello World!'
+db.posts.findOne({ post_id: ObjectId("66fed0e6dd9a024600924fd6") });
+// Query for the post with content 'Cassandra is great!'
+db.posts.findOne({ post_id: ObjectId("66fed0e6dd9a024600924fd8") });
+
+10. Counting Posts
+This command counts the total number of documents in the posts collection.
+db.posts.countDocuments({});
+
+
+Cassandra
+
+1. Using the Keyspace
+This command selects the social keyspace to work within.
+use social;
+
+2. Creating the Users Table
+This command creates a new table named users in the social keyspace
+CREATE TABLE social.users (
+    user_id UUID PRIMARY KEY,
+    username TEXT,
+    email TEXT,
+    created_at TIMESTAMP
+);
+
+3. Creating the Posts Table
+This command creates a posts table in the social keyspace.
+CREATE TABLE social.posts (
+    post_id UUID PRIMARY KEY,
+    user_id UUID,
+    content TEXT,
+    created_at TIMESTAMP
+);
+
+4. Inserting Users
+INSERT INTO users (user_id, username, email, created_at) 
+VALUES (uuid(), 'john_doe', 'john@example.com', toTimestamp(now()));
+
+INSERT INTO users (user_id, username, email, created_at) 
+VALUES (uuid(), 'jane_doe', 'jane@example.com', toTimestamp(now()));
+
+5. Querying Users by Username
+These commands query the users table for the user_id of the specified username.
+SELECT user_id FROM users WHERE username = 'john_doe' ALLOW FILTERING;
+SELECT user_id FROM users WHERE username = 'jane_doe' ALLOW FILTERING;
+
+6. Inserting Posts
+INSERT INTO social.posts (post_id, user_id, content, created_at) 
+VALUES (uuid(), f1cd6185-4a12-4be7-8ec9-536d8ee997ec, 'Hello World!', toTimestamp(now()));
+
+INSERT INTO social.posts (post_id, user_id, content, created_at) 
+VALUES (uuid(), f1cd6185-4a12-4be7-8ec9-536d8ee997ec, 'Cassandra is great!', toTimestamp(now()));
+INSERT INTO social.posts (post_id, user_id, content, created_at) 
+VALUES (uuid(), d08c9dcd-8ec4-4d80-af99-c386ec7cae1b, 'Enjoying the sunny day!', toTimestamp(now()));
+
+7. Querying All Users
+This command retrieves all records from the users table.
+SELECT * FROM social.users;
+
+8. Querying a Specific User
+SELECT * FROM social.users WHERE username = 'john_doe' ALLOW FILTERING;
+
+9. Querying Posts by User ID
+SELECT * FROM social.posts WHERE user_id = f1cd6185-4a12-4be7-8ec9-536d8ee997ec ALLOW FILTERING;
+SELECT * FROM social.posts WHERE user_id = d08c9dcd-8ec4-4d80-af99-c386ec7cae1b ALLOW FILTERING;
+
+10. Querying by Post ID
+SELECT * FROM social.posts WHERE post_id = 530265c1-8171-4eb9-8ccb-383411fc2737 ALLOW FILTERING;
+
+11. Counting Posts
+SELECT COUNT(*) FROM social.posts ALLOW FILTERING;
+
+Difference Between MongoDB and Cassandra: Illustrated with Social Media Data
+Data Model and Schema
+Mongo
+{
+    "_id": ObjectId("..."),
+    "username": "john_doe",
+    "email": "john@example.com",
+    "created_at": new Date()
+}
+// Post document in MongoDB (collection "posts")
+{
+    "post_id": ObjectId("..."),
+    "user_id": ObjectId("..."),
+    "content": "Hello World!",
+    "created_at": new Date()
+}
+
+Cassandra
+// Users table in Cassandra
+CREATE TABLE social.users (
+    user_id UUID PRIMARY KEY,
+    username TEXT,
+    email TEXT,
+    created_at TIMESTAMP
+);
+// Posts table in Cassandra
+CREATE TABLE social.posts (
+    post_id UUID PRIMARY KEY,
+    user_id UUID,
+    content TEXT,
+    created_at TIMESTAMP
+);
+
+Querying Data
+MongoDB
+// Query for user by username
+db.users.findOne({ username: 'john_doe' });
+// Query all posts made by john_doe
+db.posts.find({ user_id: ObjectId("john_doe_user_id") });
+Cassandra
+// Query user by username (note the use of "ALLOW FILTERING" to bypass index limitations)
+SELECT * FROM users WHERE username = 'john_doe' ALLOW FILTERING;
+// Query posts by user_id
+SELECT * FROM posts WHERE user_id = f1cd6185-4a12-4be7-8ec9-536d8ee997ec ALLOW FILTERING;
+
+

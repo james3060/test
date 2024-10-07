@@ -1,0 +1,61 @@
+1.Imports:
+Imports numpy for numerical operations and time for measuring execution time.
+2.Array Creation:
+Creates two arrays (array1 and array2) with 1,000,0001,000,0001,000,000 random floating-point numbers.
+3.Vectorized Operations:
+Performs various vectorized operations (addition, subtraction, multiplication, division, square root, sine, comparison, and summation) while measuring execution time for each.
+4.Verification:
+Uses an assertion to verify the correctness of the comparison results.
+
+import numpy as np
+import time
+# Create large arrays
+size = 10**6
+array1 = np.random.rand(size)
+array2 = np.random.rand(size)
+# Vectorized addition
+start = time.time()
+result_add = array1 + array2
+end = time.time()
+print(f"Vectorized addition execution time: {end - start:.5f} seconds")
+# Vectorized subtraction
+start = time.time()
+result_subtract = array1 - array2
+end = time.time()
+print(f"Vectorized subtraction execution time: {end - start:.5f} seconds")
+# Vectorized multiplication
+start = time.time()
+result_multiply = array1 * array2
+end = time.time()
+print(f"Vectorized multiplication execution time: {end - start:.5f} seconds")
+# Vectorized division
+start = time.time()
+result_divide = array1 / array2
+end = time.time()
+print(f"Vectorized division execution time: {end - start:.5f} seconds")
+# Vectorized square root (unary operation)
+start = time.time()
+result_sqrt = np.sqrt(array1)
+end = time.time()
+print(f"Vectorized square root execution time: {end - start:.5f} seconds")
+# Vectorized trigonometric operation (sin)
+start = time.time()
+result_sin = np.sin(array1)
+end = time.time()
+print(f"Vectorized sine execution time: {end - start:.5f} seconds")
+# Vectorized element-wise comparison (boolean mask)
+start = time.time()
+result_comparison = array1 > array2
+end = time.time()
+print(f"Vectorized comparison execution time: {end - start:.5f} seconds")
+# Vectorized sum of all elements
+start = time.time()
+result_sum = np.sum(array1)
+end = time.time()
+print(f"Vectorized sum execution time: {end - start:.5f} seconds")
+# Verify some results for correctness
+assert np.all(result_comparison == (array1 > array2))
+
+Key Insights:
+1). Performance: All operations are very fast, with most taking around 0.004 seconds or less. The sine function is the slowest among them, likely due to its mathematical complexity.
+2). Efficiency of Vectorization: These results demonstrate the efficiency of using NumPy for vectorized operations, as they are significantly faster than performing operations in loops, especially with large datasets.

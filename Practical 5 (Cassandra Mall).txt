@@ -1,0 +1,129 @@
+Step 1. USE Keyspace
+Before performing any queries, make sure you are in the correct keyspace (car)
+USE car;
+
+Step 2.Creating Tables
+
+1. Customers Table
+CREATE TABLE customers (
+    customer_id UUID PRIMARY KEY,
+    name TEXT,
+    email TEXT,
+    phone TEXT
+);
+
+2. Items Table
+CREATE TABLE items (
+    item_id UUID PRIMARY KEY,
+    item_name TEXT,
+    price DECIMAL,
+    stock_quantity INT
+);
+
+3. Orders Table
+CREATE TABLE orders (
+    order_id UUID PRIMARY KEY,
+    customer_id UUID,
+    order_date TIMESTAMP,
+    total_amount DECIMAL
+);
+
+
+4. Order Items Table
+This table links orders to the specific items ordered.
+CREATE TABLE order_items (
+    order_item_id UUID PRIMARY KEY,
+    order_id UUID,
+    item_id UUID,
+    quantity INT
+);
+
+5. Suppliers Table
+CREATE TABLE suppliers (
+    supplier_id UUID PRIMARY KEY,
+    supplier_name TEXT,
+    contact_info TEXT
+);
+
+6. Deliveries Table
+
+CREATE TABLE deliveries (
+    delivery_id UUID PRIMARY KEY,
+    order_id UUID,
+    supplier_id UUID,
+    delivery_status TEXT,
+    delivery_date TIMESTAMP
+);
+
+Step 3: Insert Sample Data
+
+1. Insert Customers
+INSERT INTO customers (customer_id, name, email, phone) VALUES (uuid(), 'Alice Johnson', 'alice.j@example.com', '555-1234');
+INSERT INTO customers (customer_id, name, email, phone) VALUES (uuid(), 'Bob Smith', 'bob.s@example.com', '555-5678');
+INSERT INTO customers (customer_id, name, email, phone) VALUES (uuid(), 'Charlie Brown', 'charlie.b@example.com', '555-8765');
+INSERT INTO customers (customer_id, name, email, phone) VALUES (uuid(), 'David Wilson', 'david.w@example.com', '555-4321');
+INSERT INTO customers (customer_id, name, email, phone) VALUES (uuid(), 'Eve Davis', 'eve.d@example.com', '555-7890');
+
+2. Insert Items
+INSERT INTO items (item_id, item_name, price, stock_quantity) VALUES (uuid(), 'Thermal Jacket', 99.99, 50);
+INSERT INTO items (item_id, item_name, price, stock_quantity) VALUES (uuid(), 'Thermal Socks', 19.99, 200);
+INSERT INTO items (item_id, item_name, price, stock_quantity) VALUES (uuid(), 'Thermal Gloves', 29.99, 150);
+INSERT INTO items (item_id, item_name, price, stock_quantity) VALUES (uuid(), 'Thermal Pants', 89.99, 75);
+INSERT INTO items (item_id, item_name, price, stock_quantity) VALUES (uuid(), 'Thermal Hat', 24.99, 100);
+
+3. Insert Orders
+To get UUIDS 
+SELECT customer_id, name FROM customers;
+INSERT INTO orders (order_id, customer_id, order_date, total_amount) VALUES (uuid(), f69a64a2-8e50-4adf-be6c-6c515742e738, '2024-09-28T10:00:00Z', 119.98);  -- Alice's order
+INSERT INTO orders (order_id, customer_id, order_date, total_amount) VALUES (uuid(), 87a05cff-60df-4314-9460-72510aeb3ab2, '2024-09-28T11:00:00Z', 29.99);   -- Bob's order
+INSERT INTO orders (order_id, customer_id, order_date, total_amount) VALUES (uuid(), 53a93ae4-3ab9-4de9-8b3a-92f3eda53eff, '2024-09-28T12:00:00Z', 89.99);   -- Charlie's order
+INSERT INTO orders (order_id, customer_id, order_date, total_amount) VALUES (uuid(), 00ab7377-a3c0-4767-ab2f-bc11fc104512, '2024-09-28T13:00:00Z', 199.98);  -- David's order
+INSERT INTO orders (order_id, customer_id, order_date, total_amount) VALUES (uuid(), 55e4c694-f377-4de1-9fa7-3cdb844d4a74, '2024-09-28T14:00:00Z', 24.99);   -- Eve's order
+
+
+5. Insert Orders
+SELECT order_id, customer_id FROM orders;
+INSERT INTO order_items (order_item_id, order_id, item_id, quantity) VALUES (uuid(), 88afe799-2da9-4809-8641-05ccc7e3dcea, 8010bdfa-cb29-4c33-adee-f3e126ba0625, 1);  -- Order 1: Thermal Pants
+INSERT INTO order_items (order_item_id, order_id, item_id, quantity) VALUES (uuid(), 88afe799-2da9-4809-8641-05ccc7e3dcea, 5195f9b5-1918-4c00-9094-81eee0ca7188, 2);  -- Order 1: Thermal Socks
+INSERT INTO order_items (order_item_id, order_id, item_id, quantity) VALUES (uuid(), 411e0183-33bd-4020-8c6f-23279a50d8c1, 240c6470-c211-47c2-a8fd-b02acdd3ba64, 1);  -- Order 2: Thermal Jacket
+INSERT INTO order_items (order_item_id, order_id, item_id, quantity) VALUES (uuid(), 23658878-ea2b-4331-8abc-858ffa741ab0, 26cc698a-cf90-4436-bc8f-ffe753214745, 1);  -- Order 3: Thermal Hat
+INSERT INTO order_items (order_item_id, order_id, item_id, quantity) VALUES (uuid(), f756e753-2633-487e-a42d-eacd57f3a39d, 63e9631a-ae2e-467c-85db-b1d11dfd0733, 1);  -- Order 4: Thermal Gloves
+
+5.Insert suppliers
+INSERT INTO suppliers (supplier_id, supplier_name, contact_info) VALUES (uuid(), 'Thermal Supplies Co.', 'contact@thermalsupplies.com');
+INSERT INTO suppliers (supplier_id, supplier_name, contact_info) VALUES (uuid(), 'Cozy Apparel Inc.', 'support@cozyapparel.com');
+INSERT INTO suppliers (supplier_id, supplier_name, contact_info) VALUES (uuid(), 'Warm Wear Ltd.', 'info@warmwear.com');
+INSERT INTO suppliers (supplier_id, supplier_name, contact_info) VALUES (uuid(), 'Chilly Goods Corp.', 'sales@chillygoods.com');
+INSERT INTO suppliers (supplier_id, supplier_name, contact_info) VALUES (uuid(), 'Frosty Fashion Co.', 'hello@frostyfashion.com');
+
+6.Insert Deliveries
+SELECT order_id FROM orders;
+SELECT supplier_id, supplier_name FROM suppliers;
+INSERT INTO deliveries (delivery_id, order_id, supplier_id, delivery_status, delivery_date) VALUES (uuid(), 88afe799-2da9-4809-8641-05ccc7e3dcea, e47298e3-ac80-4e0c-b8e9-78862b4bbf0f, 'Pending', '2024-09-30T12:00:00Z');
+INSERT INTO deliveries (delivery_id, order_id, supplier_id, delivery_status, delivery_date) VALUES (uuid(), 411e0183-33bd-4020-8c6f-23279a50d8c1, 0697d583-523f-43a2-893b-730ab9f98fd1, 'Shipped', '2024-09-30T14:00:00Z');
+INSERT INTO deliveries (delivery_id, order_id, supplier_id, delivery_status, delivery_date) VALUES (uuid(), 23658878-ea2b-4331-8abc-858ffa741ab0, 1cad3dd3-245b-4ff3-84ab-606128f08372, 'Delivered', '2024-09-29T16:00:00Z');
+INSERT INTO deliveries (delivery_id, order_id, supplier_id, delivery_status, delivery_date) VALUES (uuid(), f756e753-2633-487e-a42d-eacd57f3a39d, 894321c1-acbc-4729-a2cf-8cf0d006716a, 'Pending', '2024-09-30T12:00:00Z');
+INSERT INTO deliveries (delivery_id, order_id, supplier_id, delivery_status, delivery_date) VALUES (uuid(), 6a4def97-0dde-4a04-a952-d2e417e1e894, 6ece770d-cac1-407d-9b80-04552844214a, 'In Transit', '2024-09-30T12:00:00Z');
+
+Step 4: Querying the Data
+1)Retrieve All Customers:
+Query:
+SELECT * FROM customers;
+
+2)Retrieve All Items:
+Query:
+SELECT * FROM items;
+
+4)Retrieve All Orders for a Specific Customer:
+Query:
+SELECT * FROM orders WHERE customer_id =53a93ae4-3ab9-4de9-8b3a-92f3eda53eff ALLOW FILTERING ;
+
+5)Retrieve Items in a Specific Order:
+Query:
+SELECT * FROM order_items WHERE order_id = f756e753-2633-487e-a42d-eacd57f3a39d ALLOW FILTERING;
+
+
+
+6)Retrieve Deliveries for a Specific Order:
+Query:
+SELECT * FROM deliveries WHERE order_id =6a4def97-0dde-4a04-a952-d2e417e1e894 ALLOW FILTERING ;

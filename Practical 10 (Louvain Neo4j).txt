@@ -1,0 +1,75 @@
+1.Initialization: Each node starts in its own community.
+2.Local Optimization: Nodes are iteratively moved between communities to increase modularity. Each node checks neighboring communities for potential moves that yield the highest modularity gain.
+3.Aggregation: Once no further improvements can be made, the algorithm aggregates the nodes into new communities, creating a simplified network where each community is represented as a single node.
+4.Iteration: Steps 2 and 3 are repeated until no further improvements in modularity can be achieved.
+5.Output: The result is a hierarchy of communities, providing insights into the network's structure.
+
+from neo4j import GraphDatabase
+# Establishing a connection to Neo4j
+uri = "neo4j://localhost:7687"  # Update with your Neo4j instance details
+username = "neo4j"
+password = "password"
+
+driver = GraphDatabase.driver(uri, auth=(username, password))
+
+# Define the Cypher queries to run the Louvain algorithm
+project_query = """
+CALL gds.graph.project(
+    'myGraph',
+    'Node',
+    'RELATION'
+)
+YIELD graphName;
+"""
+louvain_query = """
+CALL gds.louvain.stream('myGraph')
+YIELD nodeId, communityId, intermediateCommunityIds
+RETURN gds.util.asNode(nodeId).name AS name, communityId
+ORDER BY communityId;
+"""
+
+def run_louvain_algorithm(driver, project_query, louvain_query):
+    with driver.session() as session:
+        # First, project the graph
+        session.run(project_query)
+       
+        # Then, run the Louvain algorithm
+        result = session.run(louvain_query)
+        return list(result)  # Convert result to a list
+
+# Run the Louvain algorithm
+result = run_louvain_algorithm(driver, project_query, louvain_query)
+
+# Print the result
+for record in result:
+    print(f"Node: {record['name']}, Community ID: {record['communityId']}")
+
+# Close the Neo4j connection
+driver.close()
+
+a)
+CREATE (a:Node {name: 'Node A'})
+CREATE (b:Node {name: 'Node B'})
+CREATE (c:Node {name: 'Node C'})
+CREATE (a)-[:RELATION]->(b)
+CREATE (b)-[:RELATION]->(c)
+CREATE (c)-[:RELATION]->(a)
+
+b)(optional)
+MATCH (n:Node) RETURN n
+c)
+CALL gds.graph.drop('myGraph')
+
+d)(optional)
+CALL gds.version()
+
+STEPS:
+A) Neo4j
+    1) Install GDS Library Plugin 
+    
+B) Python
+    1) Establish the connection properly:
+	- by default username and localhost will be the same as code
+- password will be what you have saved
+
+
