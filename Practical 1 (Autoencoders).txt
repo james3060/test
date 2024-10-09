@@ -1,0 +1,67 @@
+#Implementation of Autoencoders
+
+import numpy as np 
+import tensorflow as tf
+from tensorflow.keras.layers import Input, Dense 
+from tensorflow.keras.models import Model
+from tensorflow.keras.datasets import mnist 
+import matplotlib.pyplot as plt
+
+#Load the dataset
+(x_train, _), (x_test, _) = mnist.load_data() 
+x_train = x_train.astype('float32')/255.0 
+x_test=x_test.astype('float32')/255.0
+
+#Flatten the images
+x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:]))) 
+x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
+
+#Define autoencoder architecture 
+input_dim = x_train.shape[1]
+encoding_dim = 32 #Dimension of the encoded representation
+
+#Input Layer
+input_layer = Input(shape=(input_dim,)) 
+#encoded layer
+encoded = Dense(encoding_dim, activation='relu')(input_layer) 
+#decoded layer
+decoded = Dense(input_dim, activation='sigmoid')(encoded)
+ 
+
+# Autoencoder model
+autoencoder=Model (input_layer,decoded)
+#Encoder model
+encoder = Model(input_layer,encoded)
+
+#Decoder model
+encoded_input = Input(shape=(encoding_dim,)) 
+decoder_layer=autoencoder.layers[-1] 
+decoder=Model(encoded_input,decoder_layer(encoded_input))
+
+#compile the model 
+autoencoder.compile(optimizer='adam',loss='binary_crossentropy')
+
+#Train the model 
+autoencoder.fit(x_train,x_train,epochs=10,batch_size=256,shuffle=True,validation_data=(x_test,x_test))
+
+#Encode and decode some digits 
+encoded_imgs=encoder.predict(x_test) 
+decoded_imgs=decoder.predict(encoded_imgs)
+
+def plot_images(original,reconstructed,n=10): 
+  plt.figure(figsize=(20,4))
+  for i in range(n): 
+    #original images
+    ax=plt.subplot(2,n,i+1) 
+    plt.imshow(original[i].reshape(28,28),cmap='Blues') 
+    ax.set_title("Original")
+    ax.axis('off')
+
+    #Reconstructed images 
+    ax=plt.subplot(2,n,i+1+n)
+    plt.imshow(reconstructed[i].reshape(28,28),cmap='Blues') 
+    ax.set_title("Reconstructed")
+    ax.axis('off') 
+    plt.show()
+#visualize results 
+plot_images(x_test,decoded_imgs)

@@ -1,0 +1,90 @@
+1) Translation
+
+# Install necessary libraries
+!pip install gTTS googletrans==4.0.0-rc1 
+
+from gtts import gTTS
+from googletrans import Translator
+
+class SpeechSynthesis:
+    def __init__(self, text="Hello, world!", target_lang="mr", source_lang="en"):
+        self._text = text
+        self._target_lang = target_lang
+        self._source_lang = source_lang
+        self.translator = Translator()
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, value):
+        self._text = value
+
+    @property
+    def target_lang(self):
+        return self._target_lang
+
+    @target_lang.setter
+    def target_lang(self, value):
+        self._target_lang = value
+
+    @property
+    def source_lang(self):
+        return self._source_lang
+
+    @source_lang.setter
+    def source_lang(self, value):
+        self._source_lang = value
+
+    def translate_text(self):
+        translated = self.translator.translate(self.text, src=self.source_lang, dest=self.target_lang)
+        return translated.text
+
+    def synthesize(self, filename="mr.mp3"):
+        translated_text = self.translate_text()
+        tts = gTTS(text=translated_text, lang=self.target_lang)
+        tts.save(filename)
+        print(f"Audio saved as '{filename}'")
+
+# Example usage
+synth = SpeechSynthesis(text="Hello, I am John. Can you say my name?", target_lang="mr")
+synth.synthesize()
+
+# Get properties
+print(f"Original Text: {synth.text}")
+print(f"Translated Text: {synth.translate_text()}")
+print(f"Target Language: {synth.target_lang}")
+print(f"Source Language: {synth.source_lang}")
+
+2) Python Implementation of Speech Synthesis Using gTTS and pydub
+
+# Install necessary libraries
+!pip install gtts
+!pip install pydub
+
+from gtts import gTTS
+from pydub import AudioSegment
+import os
+
+# Define the text and language
+text = "This is a sample text with adjusted volume."
+language = 'en'
+slow = False
+
+# Create a gTTS object
+tts = gTTS(text=text, lang=language, slow=slow)
+tts.save("output.mp3")
+
+# Load the audio file and increase volume
+audio = AudioSegment.from_mp3("output.mp3")
+louder_audio = audio + 10  # Increase volume by 10 dB 
+louder_audio.export("output_louder.mp3", format="mp3")
+
+# Get properties
+print(f"Text to be spoken: {text}") 
+print(f"Language: {language}")
+print(f"Slow speech: {slow}")
+
+# Play the saved audio file
+os.system("start output_louder.mp3")  # Adjust command for your OS

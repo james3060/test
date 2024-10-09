@@ -1,0 +1,70 @@
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.utils import to_categorical
+
+# Sample text corpus
+text = """I love deep learning. Deep learning is amazing and powerful. 
+Machine learning and artificial intelligence are exciting fields. 
+Recurrent Neural Networks (RNNs) are well-suited for tasks involving sequential data, 
+like text generation."""
+
+# Tokenize the text
+tokenizer = Tokenizer(char_level=True)  # Character level tokenization
+tokenizer.fit_on_texts([text])
+total_chars = len(tokenizer.word_index) + 1  # Number of unique characters
+
+# Convert text to sequence of integers 
+sequences = tokenizer.texts_to_sequences([text])[0]
+
+# Prepare input and target sequences
+def create_sequences(seq, length):
+    inputs, targets = [], []
+    for i in range(len(seq) - length):
+        inputs.append(seq[i:i + length])
+        targets.append(seq[i + 1:i + length + 1])
+    return np.array(inputs), np.array(targets)
+
+length = 10  # Length of the input sequences 
+X, y = create_sequences(sequences, length)
+y = to_categorical(y, num_classes=total_chars)  # One-hot encode the target characters
+
+# Pad sequences if necessary (not needed here as all sequences are of the same length)
+X = pad_sequences(X, maxlen=length)
+
+# Build the RNN Model
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Embedding(input_dim=total_chars, output_dim=50),
+    tf.keras.layers.SimpleRNN(units=100, return_sequences=True),
+    tf.keras.layers.Dense(total_chars, activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Train the Model 
+model.fit(X, y, epochs=20, batch_size=32)
+
+# Generate Text
+def generate_text(model, tokenizer, seed_text, length):
+    result = seed_text
+    for _ in range(length):
+        # Convert seed text to sequence 
+        sequence = tokenizer.texts_to_sequences([seed_text])[0]
+        sequence = pad_sequences([sequence], maxlen=len(seed_text))
+
+        # Predict the next character 
+        predicted_probs = model.predict(sequence, verbose=0)
+        predicted_char_index = np.argmax(predicted_probs[0, -1, :])
+        predicted_char = tokenizer.index_word[predicted_char_index]
+
+        # Append predicted character to result 
+        result += predicted_char
+
+        # Update seed text
+        seed_text = seed_text[1:] + predicted_char 
+    return result
+
+seed_text = "Deep learning" 
+generated_text = generate_text(model, tokenizer, seed_text, length=50)
+print(generated_text)
