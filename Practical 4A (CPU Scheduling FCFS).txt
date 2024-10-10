@@ -1,0 +1,44 @@
+Simulation of CPU scheduling algorithms using FCFS
+FCFS - First Come First Serve
+
+# Define the processes with their arrival and burst time
+processes = [
+    {"pid": 1, "arrival_time": 0, "burst_time": 4},
+    {"pid": 2, "arrival_time": 1, "burst_time": 3},
+    {"pid": 3, "arrival_time": 2, "burst_time": 1},
+    {"pid": 4, "arrival_time": 3, "burst_time": 2},
+]
+
+# Sort processes by arrival time
+processes.sort(key=lambda x: x["arrival_time"])
+
+# Initialize variables
+current_time = 0
+waiting_time = []
+turnaround_time = []
+
+# FCFS scheduling
+for process in processes:
+    if current_time < process["arrival_time"]:
+        current_time = process["arrival_time"]
+    
+    wait_time = current_time - process["arrival_time"]
+    waiting_time.append(wait_time)
+
+    turn_time = wait_time + process["burst_time"]
+    turnaround_time.append(turn_time)
+
+    # Update current time
+    current_time += process["burst_time"]
+
+# Calculate average waiting time and turnaround time
+average_waiting_time = sum(waiting_time) / len(waiting_time)
+average_turnaround_time = sum(turnaround_time) / len(turnaround_time)
+
+# Display results
+print("Process\tArrival Time\tBurst Time\tWaiting Time\tTurnaround Time")
+for i, process in enumerate(processes):
+    print(f"{process['pid']}\t{process['arrival_time']}\t\t{process['burst_time']}\t\t{waiting_time[i]}\t\t{turnaround_time[i]}")
+
+print(f"\nAverage Waiting Time: {average_waiting_time:.2f}")
+print(f"Average Turnaround Time: {average_turnaround_time:.2f}")

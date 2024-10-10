@@ -1,0 +1,45 @@
+Parallel Thread Management using pthread library. Implement a data parallelism using Multithreading
+
+import threading
+
+# Global variables
+NUM_THREADS = 4  # Number of threads
+ARRAY_SIZE = 1000  # Size of the array
+array = list(range(1, ARRAY_SIZE + 1))  # Array containing elements from 1 to ARRAY_SIZE
+sum_results = [0] * NUM_THREADS  # List to store partial sums for each thread
+
+# Function to be executed by each thread for data parallelism
+def calculate_sum(thread_id, start, end):
+    partial_sum = 0
+    # Each thread calculates the sum of its assigned portion of the array
+    for i in range(start, end):
+        partial_sum += array[i]
+    # Store the partial sum in the results list
+    sum_results[thread_id] = partial_sum
+
+# Main function to create threads and perform parallel computation
+def main():
+    threads = []
+    chunk_size = ARRAY_SIZE // NUM_THREADS  # Divide the array into equal chunks for each thread
+
+    # Create and start threads
+    for i in range(NUM_THREADS):
+        start = i * chunk_size  # Start index for this thread
+        end = (i + 1) * chunk_size if i != NUM_THREADS - 1 else ARRAY_SIZE  # End index for this thread
+        
+        # Create a new thread
+        thread = threading.Thread(target=calculate_sum, args=(i, start, end))
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
+
+    # Calculate the total sum from the results of all threads
+    total_sum = sum(sum_results)
+    print(f"Total sum of array elements: {total_sum}")
+
+# Entry point of the program
+if __name__ == "__main__":
+    main()

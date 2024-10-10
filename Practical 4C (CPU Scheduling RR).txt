@@ -1,0 +1,82 @@
+Simulation of CPU scheduling algorithms using Round Robin
+
+class RoundRobin:
+    def __init__(self):
+        self.n = int(input("Enter Number of Processes: "))
+        self.TQ = int(input("Enter Time Quantum: "))
+        self.PT = [i + 1 for i in range(self.n)]
+        self.AT = [0] * self.n
+        self.BT = [0] * self.n
+        self.TBT = [0] * self.n
+        self.RT = [0] * self.n
+        self.CT = [0] * self.n
+        self.TAT = [0] * self.n
+        self.WT = [0] * self.n
+        self.done = [False] * self.n
+        self.ct = 0
+        self.tbt = 0
+
+    def get_input(self):
+        print("Enter Arrival Time of Processes:")
+        for i in range(self.n):
+            self.AT[i] = int(input(f"Arrival Time for Process {self.PT[i]}: "))
+        
+        print("Enter Burst Time of Processes:")
+        for i in range(self.n):
+            self.BT[i] = int(input(f"Burst Time for Process {self.PT[i]}: "))
+            self.TBT[i] = self.BT[i]
+            self.tbt += self.BT[i]
+
+    def sort_processes(self):
+        # Sorting based on Arrival Time
+        for i in range(self.n - 1):
+            min_idx = i
+            for j in range(i + 1, self.n):
+                if self.AT[j] < self.AT[min_idx]:
+                    min_idx = j
+            
+            # Swap Arrival Time
+            self.AT[i], self.AT[min_idx] = self.AT[min_idx], self.AT[i]
+            # Swap Burst Time
+            self.BT[i], self.BT[min_idx] = self.BT[min_idx], self.BT[i]
+            # Swap Total Burst Time
+            self.TBT[i], self.TBT[min_idx] = self.TBT[min_idx], self.TBT[i]
+            # Swap Process ID
+            self.PT[i], self.PT[min_idx] = self.PT[min_idx], self.PT[i]
+
+    def execute(self):
+        while self.ct != self.tbt:
+            for i in range(self.n):
+                if not self.done[i]:
+                    self.RT[i] = self.BT[i] - self.TQ
+                    if self.RT[i] < 0:
+                        self.ct += self.BT[i]
+                        self.RT[i] = 0
+                        self.CT[i] = self.ct
+                        self.done[i] = True
+                    elif self.RT[i] > 0:
+                        self.ct += self.TQ
+                        self.BT[i] = self.RT[i]  # Remaining time after this cycle
+                    elif self.RT[i] == 0:
+                        self.ct += self.BT[i]
+                        self.CT[i] = self.ct
+                        self.done[i] = True
+                        self.BT[i] = self.RT[i]
+
+    def calculate_times(self):
+        print(":: Turn Around Time for Processes ::")
+        for i in range(self.n):
+            self.TAT[i] = self.CT[i] - self.AT[i]
+            print(f"Process {self.PT[i]} = {self.TAT[i]}")
+        
+        print(":: Waiting Time for Processes ::")
+        for i in range(self.n):
+            self.WT[i] = self.TAT[i] - self.TBT[i]
+            print(f"Process {self.PT[i]} = {self.WT[i]}")
+
+# Running the program
+round_robin = RoundRobin()
+round_robin.get_input()
+round_robin.sort_processes()
+round_robin.execute()
+round_robin.calculate_times()

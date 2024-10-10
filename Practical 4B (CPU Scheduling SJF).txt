@@ -1,0 +1,52 @@
+Simulation of CPU scheduling algorithms using SJF
+SJF - Shortest Job First
+
+# Define the processes with their arrival time and burst time
+processes = [
+    {"pid": 1, "arrival_time": 0, "burst_time": 6},
+    {"pid": 2, "arrival_time": 1, "burst_time": 8},
+    {"pid": 3, "arrival_time": 2, "burst_time": 7},
+    {"pid": 4, "arrival_time": 3, "burst_time": 3},
+]
+
+# Initialize variables
+current_time = 0
+waiting_time = [0] * len(processes)
+turnaround_time = [0] * len(processes)
+completed = 0
+visited = [False] * len(processes)
+
+# SJF scheduling
+while completed != len(processes):
+    idx = -1
+    min_burst = float('inf')
+    
+    for i in range(len(processes)):
+        if (processes[i]["arrival_time"] <= current_time and 
+                not visited[i] and 
+                processes[i]["burst_time"] < min_burst):
+            min_burst = processes[i]["burst_time"]
+            idx = i
+            
+    if idx != -1:
+        # Process found
+        visited[idx] = True
+        current_time += processes[idx]["burst_time"]
+        waiting_time[idx] = current_time - processes[idx]["arrival_time"] - processes[idx]["burst_time"]
+        turnaround_time[idx] = current_time - processes[idx]["arrival_time"]
+        completed += 1
+    else:
+        # No process is currently available to run
+        current_time += 1
+
+# Calculate average waiting time and turnaround time
+average_waiting_time = sum(waiting_time) / len(waiting_time)
+average_turnaround_time = sum(turnaround_time) / len(turnaround_time)
+
+# Display results
+print("Process\tArrival Time\tBurst Time\tWaiting Time\tTurnaround Time")
+for i, process in enumerate(processes):
+    print(f"{process['pid']}\t{process['arrival_time']}\t\t{process['burst_time']}\t\t{waiting_time[i]}\t\t{turnaround_time[i]}")
+
+print(f"\nAverage Waiting Time: {average_waiting_time:.2f}")
+print(f"Average Turnaround Time: {average_turnaround_time:.2f}")

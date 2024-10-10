@@ -1,0 +1,82 @@
+Simulation of Bankers algorithm to check whether a given system is in safe state or not. Also check whether addition resource requested can be granted immediately
+
+def is_safe(processes, available, max_need, allocation):
+    """
+    Checks if the given system is in a safe state using the Banker's algorithm.
+
+    Args:
+        processes: The number of processes in the system.
+        available: The available resources of each type.
+        max_need: A matrix representing the maximum need of each process for each resource type.
+        allocation: A matrix representing the current allocation of resources to each process.
+
+    Returns:
+        True if the system is in a safe state, False otherwise.
+    """
+    work = available.copy()
+    finish = [False] * processes
+
+    while True:
+        found = False
+        for i in range(processes):
+            if not finish[i] and all(max_need[i][j] <= work[j] for j in range(len(work))):
+                found = True
+                finish[i] = True
+                work = [work[j] + allocation[i][j] for j in range(len(work))]
+                break
+        
+        if not found:
+            return False
+
+    return True
+
+def can_grant_request(processes, available, max_need, allocation, request, process_index):
+    """
+    Checks if the given resource request can be granted immediately without violating the safety condition.
+
+    Returns:
+        True if the request can be granted, False otherwise.
+    """
+    if any(request[i] > max_need[process_index][i] for i in range(len(request))):
+        return False
+
+    temp_available = [available[i] - request[i] for i in range(len(available))]
+    temp_allocation = allocation.copy()
+    temp_allocation[process_index] = [
+        allocation[process_index][i] + request[i] for i in range(len(request))
+    ]
+    
+    return is_safe(processes, temp_available, max_need, temp_allocation)
+
+# Example usage:
+processes = 5
+resources = 3
+
+available = [3, 3, 2]
+max_need = [
+    [0, 1, 0],
+    [1, 0, 2],
+    [2, 0, 1],
+    [0, 0, 2],
+    [0, 0, 1]
+]
+allocation = [
+    [0, 0, 0],
+    [1, 0, 1],
+    [2, 0, 0],
+    [0, 0, 2],
+    [0, 0, 0]
+]
+
+if is_safe(processes, available, max_need, allocation):
+    print("System is in a safe state.")
+else:
+    print("System is not in a safe state.")
+
+request = [1, 0, 2]
+process_index = 0
+
+if can_grant_request(processes, available, max_need, allocation, request, process_index):
+    print("Request can be granted immediately.")
+else:
+    print("Request cannot be granted immediately.")

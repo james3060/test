@@ -1,0 +1,97 @@
+Dynamic memory allocation algorithms- first-fit, best-fit, worst-fit algorithms
+
+Theory for reference: -
+The First-Fit algorithm allocates memory by assigning processes to the first block that is sufficiently large. It scans the memory blocks from the beginning and places the process in the first available block that can accommodate it.
+Complexity: O(n * m)
+
+The Best-Fit algorithm allocates memory by selecting the smallest block that fits the process. It aims to minimize wasted space by choosing the block with the least leftover space after allocation.
+Complexity: O(n * m)
+
+The Worst-Fit algorithm allocates memory by selecting the largest available block for a process. This method is intended to leave the largest possible blocks free for future allocations.
+Complexity: O(n * m)
+
+1.First-Fit Algorithm in Python
+
+def first_fit(block_size, process_size):
+    allocation = [-1] * len(process_size)  # Initialize allocation as -1 (not allocated)
+
+    for i in range(len(process_size)):  # Traverse each process
+        for j in range(len(block_size)):  # Find the first block that fits
+            if block_size[j] >= process_size[i]:
+                allocation[i] = j  # Assign block j to process i
+                block_size[j] -= process_size[i]  # Reduce available block size
+                break
+
+    # Output the result
+    print("\nProcess No.\tProcess Size\tBlock No.")
+    for i in range(len(process_size)):
+        print(f"{i + 1}\t\t{process_size[i]}\t\t", end="")
+        if allocation[i] != -1:
+            print(f"{allocation[i] + 1}")
+        else:
+            print("Not Allocated")
+
+# Example usage
+block_size = [100, 500, 200, 300, 600]
+process_size = [212, 417, 112, 426]
+first_fit(block_size, process_size)
+
+2.Best-Fit Algorithm in Python:
+
+def best_fit(block_size, process_size):
+    allocation = [-1] * len(process_size)  # Initialize allocation as -1 (not allocated)
+
+    for i in range(len(process_size)):  # Traverse each process
+        best_idx = -1
+        for j in range(len(block_size)):  # Find the smallest block that fits
+            if block_size[j] >= process_size[i]:
+                if best_idx == -1 or block_size[best_idx] > block_size[j]:
+                    best_idx = j
+        
+        if best_idx != -1:
+            allocation[i] = best_idx
+            block_size[best_idx] -= process_size[i]
+
+    # Output the result
+    print("\nProcess No.\tProcess Size\tBlock No.")
+    for i in range(len(process_size)):
+        print(f"{i + 1}\t\t{process_size[i]}\t\t", end="")
+        if allocation[i] != -1:
+            print(f"{allocation[i] + 1}")
+        else:
+            print("Not Allocated")
+
+# Example usage
+block_size = [100, 500, 200, 300, 600]
+process_size = [212, 417, 112, 426]
+best_fit(block_size, process_size)
+
+3.Worst-Fit Algorithm in Python:
+
+def worst_fit(block_size, process_size):
+    allocation = [-1] * len(process_size)  # Initialize allocation as -1 (not allocated)
+
+    for i in range(len(process_size)):  # Traverse each process
+        worst_idx = -1
+        for j in range(len(block_size)):  # Find the largest block that fits
+            if block_size[j] >= process_size[i]:
+                if worst_idx == -1 or block_size[worst_idx] < block_size[j]:
+                    worst_idx = j
+
+        if worst_idx != -1:
+            allocation[i] = worst_idx
+            block_size[worst_idx] -= process_size[i]
+
+    # Output the result
+    print("\nProcess No.\tProcess Size\tBlock No.")
+    for i in range(len(process_size)):
+        print(f"{i + 1}\t\t{process_size[i]}\t\t", end="")
+        if allocation[i] != -1:
+            print(f"{allocation[i] + 1}")
+        else:
+            print("Not Allocated")
+
+# Example usage
+block_size = [100, 500, 200, 300, 600]
+process_size = [212, 417, 112, 426]
+worst_fit(block_size, process_size)

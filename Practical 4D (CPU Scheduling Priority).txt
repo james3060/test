@@ -1,0 +1,68 @@
+Simulation of CPU scheduling algorithms using Priority
+
+class PriorityScheduling:
+    def __init__(self):
+        self.n = int(input("Enter Number of Processes: "))
+        self.PT = [i + 1 for i in range(self.n)]
+        self.AT = [0] * self.n  # Arrival Time
+        self.BT = [0] * self.n  # Burst Time
+        self.PRI = [0] * self.n  # Priority
+        self.CT = [0] * self.n  # Completion Time
+        self.TAT = [0] * self.n  # Turnaround Time
+        self.WT = [0] * self.n  # Waiting Time
+        self.done = [False] * self.n
+
+    def get_input(self):
+        print("Enter Arrival Time of Processes:")
+        for i in range(self.n):
+            self.AT[i] = int(input(f"Arrival Time for Process {self.PT[i]}: "))
+        
+        print("Enter Burst Time of Processes:")
+        for i in range(self.n):
+            self.BT[i] = int(input(f"Burst Time for Process {self.PT[i]}: "))
+        
+        print("Enter Priority of Processes (lower number indicates higher priority):")
+        for i in range(self.n):
+            self.PRI[i] = int(input(f"Priority for Process {self.PT[i]}: "))
+
+    def sort_processes(self):
+        # Sort by Priority, if equal, by Arrival Time
+        for i in range(self.n - 1):
+            min_idx = i
+            for j in range(i + 1, self.n):
+                if self.PRI[j] < self.PRI[min_idx]:
+                    min_idx = j
+                elif self.PRI[j] == self.PRI[min_idx] and self.AT[j] < self.AT[min_idx]:
+                    min_idx = j
+            
+            # Swap Arrival Time, Burst Time, Priority, and Process ID
+            self.AT[i], self.AT[min_idx] = self.AT[min_idx], self.AT[i]
+            self.BT[i], self.BT[min_idx] = self.BT[min_idx], self.BT[i]
+            self.PRI[i], self.PRI[min_idx] = self.PRI[min_idx], self.PRI[i]
+            self.PT[i], self.PT[min_idx] = self.PT[min_idx], self.PT[i]
+
+    def execute(self):
+        time = 0
+        for i in range(self.n):
+            if time < self.AT[i]:
+                time = self.AT[i]
+            time += self.BT[i]
+            self.CT[i] = time
+
+    def calculate_times(self):
+        print(":: Turnaround Time for Processes ::")
+        for i in range(self.n):
+            self.TAT[i] = self.CT[i] - self.AT[i]
+            print(f"Process {self.PT[i]}: Turnaround Time = {self.TAT[i]}")
+        
+        print(":: Waiting Time for Processes ::")
+        for i in range(self.n):
+            self.WT[i] = self.TAT[i] - self.BT[i]
+            print(f"Process {self.PT[i]}: Waiting Time = {self.WT[i]}")
+
+# Running the program
+priority_scheduling = PriorityScheduling()
+priority_scheduling.get_input()
+priority_scheduling.sort_processes()
+priority_scheduling.execute()
+priority_scheduling.calculate_times()

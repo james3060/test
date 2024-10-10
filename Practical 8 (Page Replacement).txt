@@ -1,0 +1,98 @@
+Page replacement algorithm FIFO LRU and Optimal
+
+Reference theory:
+
+FIFO is the simplest page replacement algorithm. It operates on the principle that the oldest page in memory should be replaced first. This means that the page that has been in memory the longest will be the one that is replaced when a new page needs to be loaded.
+
+LRU replaces the page that has not been used for the longest period of time. This approach assumes that pages that have been used recently will likely be used again soon, while those that haven’t been used recently are less likely to be needed.
+
+The Optimal page replacement algorithm (also known as MIN) replaces the page that will not be used for the longest period of time in the future. It is considered the best possible page replacement strategy in terms of minimizing page faults, but it is not practical for real systems because it requires future knowledge of page references.
+
+1)FIFO:
+
+# FIFO Page Replacement
+
+def fifo_page_replacement(pages, num_frames):
+    memory = []
+    page_faults = 0
+
+    for page in pages:
+        if page not in memory:
+            page_faults += 1
+            if len(memory) == num_frames:
+                memory.pop(0)  # Remove the oldest page (FIFO)
+            memory.append(page)
+        print(f"Page {page}: {memory}")
+
+    print(f"Total page faults (FIFO): {page_faults}")
+
+# Example Usage
+pages = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2]
+num_frames = 3
+fifo_page_replacement(pages, num_frames)
+
+2)LRU:
+
+# LRU Page Replacement
+
+def lru_page_replacement(pages, num_frames):
+    memory = []
+    page_faults = 0
+
+    for page in pages:
+        if page not in memory:
+            page_faults += 1
+            if len(memory) == num_frames:
+                memory.pop(0)  # Remove the least recently used page
+        else:
+            memory.remove(page)  # Move the accessed page to the end
+
+        memory.append(page)  # Append the current page as most recently used
+        print(f"Page {page}: {memory}")
+
+    print(f"Total page faults (LRU): {page_faults}")
+
+# Example Usage
+pages = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2]
+num_frames = 3
+lru_page_replacement(pages, num_frames)
+
+3)Optimal:
+
+# Optimal Page Replacement
+
+def optimal_page_replacement(pages, num_frames):
+    memory = []
+    page_faults = 0
+
+    for i in range(len(pages)):
+        page = pages[i]
+        if page not in memory:
+            page_faults += 1
+            if len(memory) < num_frames:
+                memory.append(page)
+            else:
+                # Find the page that won't be used for the longest time
+                furthest = -1
+                index_to_replace = -1
+
+                for j in range(len(memory)):
+                    try:
+                        next_use = pages[i + 1:].index(memory[j])
+                    except ValueError:
+                        next_use = float('inf')  # If not found, it won't be used again
+
+                    if next_use > furthest:
+                        furthest = next_use
+                        index_to_replace = j
+
+                memory[index_to_replace] = page
+
+        print(f"Page {page}: {memory}")
+
+    print(f"Total page faults (Optimal): {page_faults}")
+
+# Example Usage
+pages = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2]
+num_frames = 3
+optimal_page_replacement(pages, num_frames)
