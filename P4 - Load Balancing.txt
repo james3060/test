@@ -1,0 +1,90 @@
+Steps: 
+•	Go to E2C Dashboard.
+
+ 
+
+•	Name your Instance.
+ 
+
+
+
+•	Select the AMI (Application Machine Image), we have selected ubuntu 22.04 here.
+ 
+•	Select the instance type.
+ 
+•	Create a new key pair, with the following settings.
+ 
+
+•	In Network Settings, click on edit and add the “HTTP” security group as follows. Also set the source type as “Anywhere”.
+
+ 
+
+•	Add the number of instances that you want to create and then Launch the instances.  
+•	Once the instances have been successfully created, they will be visible in the instances dashboard.
+
+                 
+
+•	Now select an instance and click on “Connect”.
+                             
+•	Click on the “EC2 Instance Connect” option, and then click on connect.
+     
+
+
+
+•	Once you connect to the instance, a Linux terminal opens, run the following commands in it to update the machine.
+Sudo apt-get update
+ 
+
+•	Now we must install an apache web server on our machine. For this use the command, 
+Sudo apt-get install apache2 -y
+•	Once the Apache server has been installed, we can check if the server is visible or not by copying the public IP and paste it in the URL box.
+ 
+
+•	You will encounter the Apache2 default page.
+
+ 
+
+
+
+
+•	To replace the content of this html file, use the following commands: -
+cd /var/www/html
+sudo su
+sudo echo “This is the First Server” >index.html
+ 
+•	The following changes will be observed in the web page.
+ 
+•	Repeat the same steps for the second instance as well.
+•	Once both the servers are up and running, navigate to the EC2 dashboards and click on Load Balancers.
+ 
+•	Click on the create load balancers option and then select Application load balancers.
+ 
+ 
+
+•	Select the following options in the configuration window.
+ 
+•	In the network mapping, make sure the VPC is the same as your instances. Also select all the available zones and subnets.
+ 
+ 
+•	In the Security Groups tab, select the security group used while creating the instances which has the SSL and HTTP enabled.
+ 
+•	In Listeners and Routing Section, click on the create “Target Group”. You will be re-directed to a page where you can create a new target group. 
+•	Select the instances option, and let the rest of the fields be as default values, then click on next.
+ 
+•	Select the instances that we created, and then click on the “Include as pending below” option.
+ 
+•	Review the targets and then click on “Create Target Group”.
+ 
+
+
+
+•	Now refresh the Listeners and routing section, and select the target group. Then click on the “Create Load Balancer” button at the bottom of the page.
+ 
+•	Check on the target, they will now be in the “Initial” stage.
+ 
+•	After a while, we can see that both of our targets are healthy.
+ 
+
+•	Now copy the DNS name of the Load balancer, and paste it in the URL section of your browser. Refresh the page and you will be able to see the results from both the servers
+ 
+

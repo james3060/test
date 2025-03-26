@@ -1,0 +1,53 @@
+Steps:
+•	Create AWS account
+•	Open AWS console, search elastic Beanstalk and open it.
+•	Click on get started -> create application
+ 
+
+
+
+
+Step 1: Configure environment
+1.	Give application name
+ 
+2.	Environment name is set by default
+3.	Platform -> Managed Platform -> from drop down select python
+4.	Application code -> Sample application
+5.	Presets -> Single instance (free tier eligible)
+
+Step 2: Configure service access
+1.	Service role -> Select create and use new service role
+2.	Service role name -> my-new-aws-elasticbeanstalk-service-role (user can provide any name)
+3.	Skip EC2 key pair
+4.	To create EC2 instance profile -> go to new tab (AWS console) and search IAM
+5.	IAM -> Roles -> Create role
+ 
+6.	Select trusted entity -> trusted entity type -> AWS service
+7.	Use case -> Service or use case -> select "EC2" -> press next
+8.	Add permission -> type/search "elasticbeanstalk" and add 3 services
+1.AWSElasticBeanstalkMulticontainerdocker
+2.AWSElasticBeanstalkWebTier
+3.AWSElasticBeanstalkWorkerTier
+
+9.	Role name -> "my-new-aws-elasticbeanstalk-service-role"(any name by user) -> click create role
+ 
+
+
+
+10.	now go to EC2 instance profile and set the role name.
+ 
+Step 3: Set up networking, database, and tags
+
+1.	VPC -> select default "vpc-007892889e7d00747 | (172.31.0.0/16)"
+2.	Instance subnets -> select any 2 subnets -> click NEXT
+
+
+Step 4: Configure instance traffic and scaling
+1.	EC2 security groups -> select “default” -> NEXT
+ 
+Step 5: Configure updates, monitoring, and logging
+1.	Monitoring -> system -> select Basic
+2.	Managed platform updates -> managed updates ->UNCHECK the Activated button -> NEXT
+ 
+Step 6: Review and click Submit
+•	Application will be created.

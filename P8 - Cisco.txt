@@ -1,0 +1,101 @@
+VLAN Design 
+Requirements: - 1 2960-Switch, 4 PC’s
+
+Drag and Drop 2960-Switche from Network Devices -> Switches.
+Drag and Drop PC’s from End Devices -> PC’s.
+ 
+Click on the PC’s and in IP Configuration, set the IPv4 Addresses.
+ 
+Select a Copper Straight-Through Cable. Make the following connections: -
+PC4 FastEthernet 0 to Switch0 FastEthernet 0/1.
+PC5 FastEthernet 0 to Switch0 FastEthernet 0/2.
+PC6 FastEthernet 0 to Switch1 FastEthernet 0/3.
+PC7 FastEthernet 0 to Switch1 FastEthernet 0/4.
+ 
+Now open the Command prompt from any PC and try pinging other PC’s.
+ 
+Now click on the Switch and type the following commands in the CLI, to name the 2 VLAN’s.
+Switch>enable
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#vlan 2
+Switch(config-vlan)#name VLAN2
+Switch(config-vlan)#exit
+Switch(config)#vlan 3
+Switch(config-vlan)#name VLAN3
+Switch(config-vlan)#exit
+Switch(config)#
+ 
+Now Configure the PC’s in their specific VLAN’s.
+Switch(config)#interface FastEthernet 0/1
+Switch(config-if)#switchport access vlan 2
+Switch(config-if)#exit
+Switch(config)#interface FastEthernet 0/2
+Switch(config-if)#switchport access vlan 2Switch(config-if)#exit
+Switch(config)#interface FastEthernet 0/3
+Switch(config-if)#switchport access vlan 3
+Switch(config-if)#exit
+Switch(config)#interface FastEthernet 0/4
+Switch(config-if)#switchport access vlan 3
+Switch(config-if)#exit
+Switch(config)#
+ 
+Now try accessing the PC’s in same VLAN, and other VLAN’s. You will not get a response from the other VLAN PC’s.
+ 
+
+Routing
+Requirements: - 2 1841-Routers, 2 2950T-24 Switches, 4 PC’s
+
+Drag and Drop 1841-Routers from Network Devices -> Routers.
+Drag and Drop 2950T-24 Switches from Network Devices -> Switches.
+Drag and Drop PC’s from End Devices -> PC’s.
+ 
+Click on PC’s 8/9 and enter the following details, in the IP Configuration Tab.
+IPv4 Address: - 192.168.2.7/9
+Subnet Mask: - 255.255.255.0
+Default Gateway: - 192.168.2.3
+
+Click on PC’s 10/11 and enter the following details, in the IP Configuration Tab.
+IPv4 Address: - 192.168.2.5/7
+Subnet Mask: - 255.255.255.0
+Default Gateway: - 192.168.3.3
+
+Now Select a Copper Cross-Over Cable and connect both the router on their FastEthernet 0/0 port.
+ 
+Now Select a Copper Cross-Over Cable and connect both the router to their respective switches on their FastEthernet 0/1 port to FastEthernet 0/3 port of the switches.
+ 
+Now for Router 1, add the following details and change the port status to “On”.
+FastEthernet 0/0 IPv4 Address: - 192.168.1.2
+FastEthernet 0/1 IPv4 Address: - 192.168.2.3
+ 
+
+Similarly for Router 2: -
+FastEthernet 0/0 IPv4 Address: - 192.168.1.4
+FastEthernet 0/1 IPv4 Address: - 192.168.3.3
+
+Now Select a Copper Cross-Over Cable and connect both the Switches to their respective PC’s.
+
+ 
+Open the CLI of the Router1. Configure the static routes using the following commands.
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#ip route 192.168.3.0 255.255.255.0 192.168.1.4
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+
+Open the CLI of the Router2. Configure the static routes using the following commands.
+Router#
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#ip route 192.168.2.0 255.255.255.0 192.168.1.2
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+
+Now Ping the PC in other routes and see the results.
+
+ 
