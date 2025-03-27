@@ -1,3 +1,5 @@
+!pip install river
+
 from river import tree
 
 # Create a Hoeffding Tree (VFDT) classifier
