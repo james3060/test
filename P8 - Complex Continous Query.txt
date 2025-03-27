@@ -18,7 +18,6 @@ TEMP_DROP = 26
 HUMIDITY_HIGH = 63
 
 
-
 # Process weather stream
 previous_temp = None
 for record in weather_stream:
@@ -26,19 +25,19 @@ for record in weather_stream:
     humidity = record["humidity"]
     timestamp = record["timestamp"]
 
-    print(f"\n🌦️ Time: {timestamp} | Temperature: {temp}°C | Humidity: {humidity}%")
+    print(f"\n Time: {timestamp} | Temperature: {temp}°C | Humidity: {humidity}%")
 
-    # 🔴 Temperature exceeds threshold
+    # Temperature exceeds threshold
     if temp > TEMP_HIGH:
-        print("🚨 Heat Alert! Temperature above", TEMP_HIGH, "°C")
+        print("Heat Alert! Temperature above", TEMP_HIGH, "°C")
 
-    # 🟡 Humidity exceeds threshold
+    #Humidity exceeds threshold
     if humidity > HUMIDITY_HIGH:
-        print("⚠️ High Humidity Alert! Humidity:", humidity, "%")
+        print("High Humidity Alert! Humidity:", humidity, "%")
 
-    # 🔵 Temperature drop detection (Temporal Operator)
+    #Temperature drop detection (Temporal Operator)
     if previous_temp is not None and temp < previous_temp:
-        print(f"📉 Temperature Dropped! Previous: {previous_temp}°C → Current: {temp}°C")
+        print(f"Temperature Dropped! Previous: {previous_temp}°C → Current: {temp}°C")
 
     # Update previous temperature
     previous_temp = temp
