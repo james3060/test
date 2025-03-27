@@ -1,0 +1,22 @@
+from mlxtend.frequent_patterns import apriori
+from mlxtend.frequent_patterns import association_rules
+import pandas as pd
+
+# Sample transaction data
+data = pd.DataFrame([
+    [1, 1, 0], 
+    [1, 0, 1], 
+    [1, 1, 1], 
+    [0, 1, 1]
+], columns=['Milk', 'Bread', 'Butter'])
+
+# Find frequent itemsets
+frequent_itemsets = apriori(data, min_support=0.5, use_colnames=True)
+
+
+
+# Generate association rules
+rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.5)
+
+print("Frequent Itemsets:\n", frequent_itemsets)
+print("\nAssociation Rules:\n", rules[['antecedents', 'consequents', 'support', 'confidence']])

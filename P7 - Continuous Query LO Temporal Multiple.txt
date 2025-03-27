@@ -1,0 +1,56 @@
+import time
+import random
+
+# Simulated stock price data streams
+aapl_stream = [
+    {"id": 1, "symbol": "AAPL", "price": 150.0, "timestamp": "2025-03-11T10:00:00"},
+    {"id": 2, "symbol": "AAPL", "price": 152.5, "timestamp": "2025-03-11T10:01:00"},
+    {"id": 3, "symbol": "AAPL", "price": 151.8, "timestamp": "2025-03-11T10:02:00"},
+    {"id": 4, "symbol": "AAPL", "price": 153.2, "timestamp": "2025-03-11T10:03:00"},
+    {"id": 5, "symbol": "AAPL", "price": 155.0, "timestamp": "2025-03-11T10:04:00"},
+]
+
+googl_stream = [
+    {"id": 1, "symbol": "GOOGL", "price": 2800.0, "timestamp": "2025-03-11T10:00:00"},
+    {"id": 2, "symbol": "GOOGL", "price": 2825.0, "timestamp": "2025-03-11T10:01:00"},
+    {"id": 3, "symbol": "GOOGL", "price": 2815.5, "timestamp": "2025-03-11T10:02:00"},
+    {"id": 4, "symbol": "GOOGL", "price": 2840.0, "timestamp": "2025-03-11T10:03:00"},
+    {"id": 5, "symbol": "GOOGL", "price": 2860.0, "timestamp": "2025-03-11T10:04:00"},
+]
+
+# Variables to store previous stock prices
+previous_aapl_price = None
+previous_googl_price = None
+
+# Simulating streaming process
+for i in range(len(aapl_stream)):
+    aapl_record = aapl_stream[i]
+    googl_record = googl_stream[i]
+
+    print("\n📈 Incoming AAPL Data:", aapl_record)
+    print("📈 Incoming GOOGL Data:", googl_record)
+
+    # Detect trend in AAPL stock price
+    if previous_aapl_price is not None and aapl_record["price"] > previous_aapl_price:
+        print(f"✔ AAPL Trend Alert: Price increased! Previous: {previous_aapl_price}, Current: {aapl_record['price']}")
+
+    # Detect trend in GOOGL stock price
+    if previous_googl_price is not None and googl_record["price"] > previous_googl_price:
+        print(f"✔ GOOGL Trend Alert: Price increased! Previous: {previous_googl_price}, Current: {googl_record['price']}")
+
+    # Compare AAPL vs GOOGL price change
+    aapl_change = aapl_record["price"] - previous_aapl_price if previous_aapl_price is not None else 0
+    googl_change = googl_record["price"] - previous_googl_price if previous_googl_price is not None else 0
+
+    if previous_aapl_price is not None and previous_googl_price is not None:
+        if aapl_change > googl_change:
+            print(f"📊 AAPL is rising faster than GOOGL! AAPL Change: {aapl_change}, GOOGL Change: {googl_change}")
+        elif googl_change > aapl_change:
+            print(f"📊 GOOGL is rising faster than AAPL! GOOGL Change: {googl_change}, AAPL Change: {aapl_change}")
+
+    # Update previous prices
+    previous_aapl_price = aapl_record["price"]
+    previous_googl_price = googl_record["price"]
+
+    # Simulating real-time delay
+    time.sleep(2)

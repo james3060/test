@@ -1,0 +1,23 @@
+from river import tree
+
+# Create a Hoeffding Tree (VFDT) classifier
+model = tree.HoeffdingTreeClassifier()
+
+# Sample streaming data (features & labels)
+data = [
+    ({"feature1": 2, "feature2": 3}, 0),
+    ({"feature1": 5, "feature2": 2}, 1),
+    ({"feature1": 1, "feature2": 4}, 0),
+    ({"feature1": 6, "feature2": 1}, 1),
+]
+
+
+
+
+# Train the model incrementally
+for x, y in data:
+    y_pred = model.predict_one(x)  # Predict
+    model.learn_one(x, y)          # Train
+    print(f"Predicted: {y_pred}, Actual: {y}")
+
+# Model is now trained and ready for streaming predictions!

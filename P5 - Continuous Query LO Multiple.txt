@@ -1,0 +1,34 @@
+#Exercise with continuous queries Logical operations on multiple streams
+import time
+import random
+
+# Simulated streaming data for temperature and humidity
+temperature_stream = [
+    {"id": 1, "temperature": 45.0, "timestamp": "2025-03-11T10:00:00"},
+    {"id": 2, "temperature": 55.3, "timestamp": "2025-03-11T10:01:00"},
+    {"id": 3, "temperature": 52.1, "timestamp": "2025-03-11T10:02:00"},
+    {"id": 4, "temperature": 48.5, "timestamp": "2025-03-11T10:03:00"}
+]
+
+humidity_stream = [
+    {"id": 1, "humidity": 65.0, "timestamp": "2025-03-11T10:00:00"},
+    {"id": 2, "humidity": 72.3, "timestamp": "2025-03-11T10:01:00"},
+    {"id": 3, "humidity": 75.1, "timestamp": "2025-03-11T10:02:00"},
+    {"id": 4, "humidity": 68.5, "timestamp": "2025-03-11T10:03:00"}
+]
+
+
+# Simulating streaming process
+for i in range(len(temperature_stream)):
+    temp_record = temperature_stream[i]
+    humid_record = humidity_stream[i]
+
+    print("\nIncoming Temperature Data:", temp_record)
+    print("Incoming Humidity Data:", humid_record)
+
+    # Join data based on 'id' and apply logical filtering
+    if temp_record["temperature"] > 50 and humid_record["humidity"] > 70:
+        print("✔ Alert: High Temperature & Humidity!", temp_record, humid_record)
+
+    # Simulating real-time delay
+    time.sleep(2)

@@ -1,0 +1,21 @@
+#Exercise with continuous queries Logical operations on single stream 
+import time
+
+# Inbuilt data (simulating streaming input)
+data = [
+    {"id": 1, "temperature": 45.0, "timestamp": "2025-03-11T10:00:00"},
+    {"id": 2, "temperature": 55.3, "timestamp": "2025-03-11T10:01:00"},
+    {"id": 3, "temperature": 52.1, "timestamp": "2025-03-11T10:02:00"},
+    {"id": 4, "temperature": 48.5, "timestamp": "2025-03-11T10:03:00"}
+]
+
+# Simulate streaming by processing one record at a time
+for record in data:
+    print("\nIncoming Data:", record)  # Print new data
+    
+    # Apply Logical Filtering (temperature > 50)
+    if record["temperature"] > 50:
+        print("✔ High Temperature Alert:", record)
+    
+    # Simulate real-time delay
+    time.sleep(2)
