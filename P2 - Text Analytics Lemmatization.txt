@@ -1,0 +1,56 @@
+# Tokenization
+
+!pip install nltk
+import nltk
+from nltk import sent_tokenize
+from nltk import word_tokenize
+textfile=open('/content/mytext.txt')
+text=textfile.read()
+print(text)
+
+import nltk
+nltk.download('all')
+words=word_tokenize(text)
+words
+
+# Stop-word Removal
+
+from nltk.corpus import stopwords
+stop_words=set(stopwords.words("english"))
+filtered_list=[]
+for word in words:
+  if word.casefold() not in stop_words:
+    filtered_list.append(word)
+filtered_list
+
+# Stemming
+
+from nltk.stem import PorterStemmer
+stemmer=PorterStemmer()
+string_for_stemming=text
+words=word_tokenize(string_for_stemming)
+stemmed_words=[stemmer.stem(word) for word in words]
+stemmed_words
+
+
+# Lemmatization
+
+from nltk import pos_tag
+string_for_pos=words
+pos=pos_tag(string_for_pos)
+pos
+#Tagset
+nltk.help.upenn_tagset()
+#Word Net Lemmatizer
+from nltk.stem import WordNetLemmatizer
+lemmatizer=WordNetLemmatizer()
+string_for_lemmatizing=text
+words= lemmatizer.lemmatize(string_for_lemmatizing)
+words
+#Worst Good
+lemmatizer.lemmatize("worst",pos="a")
+lemmatizer.lemmatize("good",pos="a")
+#Wordnet
+from nltk.stem.wordnet import WordNetLemmatizer
+lemmaObj = WordNetLemmatizer()
+lemmaObj.lemmatize("went", pos="v")

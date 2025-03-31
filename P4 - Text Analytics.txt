@@ -1,0 +1,57 @@
+A.Finding Strings or Words in a Text Paragraph and Counting Their Occurrences: -
+Code: -
+
+def count_word_occurrences(text, word):
+    return text.lower().split().count(word.lower())
+
+# Example
+text = "Python is a great programming language. Python is also widely used in data science."
+word = "python"
+print(f"The word '{word}' occurs {count_word_occurrences(text, word)} times.")
+
+B.Named Entity Recognition (NER): -
+Code: -
+
+import spacy
+# Load SpaCy model for NER
+nlp = spacy.load('en_core_web_sm')
+
+def extract_named_entities(text):
+    doc = nlp(text)
+    entities = [(entity.text, entity.label_) for entity in doc.ents]
+    return entities
+
+# Example
+text = "Barack Obama was born in Hawaii on August 4, 1961. He was elected President in 2008."
+print(extract_named_entities(text))
+
+C.Vectorization: -
+Code: -
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+def vectorize_text(texts):
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform(texts)
+    return vectors.toarray(), vectorizer.get_feature_names_out()
+
+# Example
+texts = ["Python is great for data science.", "I love machine learning.", "Text analytics is amazing."]
+vectors, feature_names = vectorize_text(texts)
+
+print("Feature Names:", feature_names)
+print("Vectors:\n", vectors)
+
+D.Stripping Words to Their Basic Forms: -
+Code: -
+import spacy
+
+# Load Spacy model
+nlp = spacy.load('en_core_web_sm')
+
+def lemmatize_text(text):
+    doc = nlp(text)
+    return [token.lemma_ for token in doc]
+
+# Example
+text = "running runner runs easily"
+print(lemmatize_text(text))

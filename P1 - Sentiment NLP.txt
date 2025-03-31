@@ -1,0 +1,103 @@
+# Importing Required Libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt 
+import seaborn as sb
+from textblob import TextBlob
+import warnings
+from wordcloud import WordCloud
+
+# Suppress unnecessary warnings to avoid clutter
+warnings.filterwarnings("ignore")
+
+# Install necessary libraries if not already installed
+!pip install textblob
+
+# Reading CSV File and displaying the first 5 rows for preview
+df = pd.read_csv("/content/sample_data/california_housing_test.csv")
+df.head()
+
+# Displaying basic information about the DataFrame
+df.info()  # Provides info on columns, data types, and non-null counts
+df.shape  # Returns the shape (rows, columns) of the DataFrame
+df.ndim  # Number of dimensions of the DataFrame
+df.size  # Total number of elements in the DataFrame
+df.keys()  # Column names of the DataFrame
+df.describe()  # Summary statistics of numeric columns
+
+# Checking for missing values
+df.isnull()  # Returns boolean DataFrame indicating missing values
+df.isnull().sum()  # Returns the sum of missing values per column
+
+# Sampling a subset of 2000 rows for sentiment analysis
+samp = df.sample(2000)
+samp.shape()  # Verifying the shape of the sampled data
+
+# Sentiment Analysis Initialization
+pol = []  # List to store polarity values of comments
+
+# Looping through the 'Comments' column to analyze sentiment
+for i in samp.Comments.values:
+    try:
+        # Perform sentiment analysis on each comment
+        analysis = TextBlob(i)
+        pol.append(analysis.sentiment.polarity)  # Append polarity score
+    except:
+        pol.append(0)  # Append 0 in case of any error
+
+# Adding polarity values to the sampled DataFrame
+samp['pol'] = pol
+
+# Categorizing sentiment into Positive, Negative, or Neutral
+samp['pol'][samp.pol == 0] = 0  # Neutral
+samp['pol'][samp.pol > 0] = 1  # Positive
+samp['pol'][samp.pol < 0] = -1  # Negative
+
+# Creating subsets for Positive, Negative, and Neutral comments
+df_positive = samp[samp.pol == 1]  # Positive comments
+df_negative = samp[samp.pol == -1]  # Negative comments
+df_neutral = samp[samp.pol == 0]  # Neutral comments
+
+# Visualizing sentiment distribution with a bar plot
+samp.pol.value_counts().plot.bar()
+samp.pol.value_counts()  # Displaying the count of each sentiment category
+
+# Collecting polarity and subjectivity data for further analysis
+pol = []  # List for polarity
+subj = []  # List for subjectivity
+
+# Loop through 'Comments' again for both polarity and subjectivity
+for i in samp.Comments.values:
+    try:
+        # Perform sentiment analysis
+        analysis = TextBlob(i)
+        pol.append(analysis.sentiment.polarity)  # Append polarity
+        subj.append(analysis.sentiment.subjectivity)  # Append subjectivity
+    except:
+        pol.append(0)  # Default values in case of error
+        subj.append(0)
+
+# Adding polarity and subjectivity to the DataFrame
+samp['pol'] = pol
+samp['subj'] = subj
+
+# Plotting a scatterplot for polarity vs. subjectivity
+sb.scatterplot(data=samp, x='pol', y='subj')
+plt.xlabel('Polarity')
+plt.ylabel('Subjectivity')
+plt.title('Sentiment Analysis: Polarity vs. Subjectivity')
+plt.show()
+
+# Creating a WordCloud from the 'Comments' column
+df['Comments'] = df['Comments'].astype(str)  # Ensure 'Comments' is treated as strings
+all_comments = ' '.join(df['Comments'].values)  # Join all comments into one large string
+
+# Generating a WordCloud image
+wordcloud = WordCloud(width=800, height=400, background_color='black').generate(all_comments)
+
+# Displaying the WordCloud
+plt.figure(figsize=(10, 6))
+plt.imshow(wordcloud, interpolation='bilinear')  # Use bilinear interpolation for smoother image
+plt.axis('off')  # Hide axes
+plt.title('Word Cloud of Comments')
+plt.show()

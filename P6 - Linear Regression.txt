@@ -1,0 +1,44 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+
+# 1. Load the California Housing Prices dataset
+housing = fetch_california_housing()
+
+# Get the features and target variable (price)
+X = housing.data[:, 0:1]  # Let's just take one feature for simplicity (e.g., "MedInc")
+y = housing.target
+
+# 2. Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 3. Train the Linear Regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# 4. Predict the results
+y_pred = model.predict(X_test)
+# 5. Plot the results
+plt.figure(figsize=(10, 6))
+
+# Plot the original data points
+plt.scatter(X_test, y_test, color='blue', label='True Data')
+
+# Plot the regression line
+plt.plot(X_test, y_pred, color='red', label='Regression Line')
+
+# Add labels and title
+plt.xlabel('Median Income')
+plt.ylabel('House Price')
+plt.title('Linear Regression - Median Income vs House Price')
+
+# Show legend
+plt.legend()
+# Show the plot
+plt.grid(True)
+plt.show()
+# Print the model parameters
+print(f"Intercept: {model.intercept_}")
+print(f"Coefficient: {model.coef_}")

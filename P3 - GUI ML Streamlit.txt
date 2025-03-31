@@ -1,0 +1,78 @@
+1.Install the Required Libraries Locally: -
+
+pip install streamlit
+pip install scikit-learn
+pip install joblib
+
+2.Create 2 Python files: -
+A.train_model.py: - 
+
+Code: -
+# train_model.py
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+import joblib
+
+# Load the dataset
+data = load_iris()
+X = data.data
+y = data.target
+
+# Split data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Train the Logistic Regression model
+model = LogisticRegression(max_iter=200)
+model.fit(X_train, y_train)
+
+# Evaluate the model
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy}")
+
+# Save the trained model
+joblib.dump(model, 'iris_model.pkl')
+
+B.app.py: - 
+Code: -
+# app.py
+import streamlit as st
+import joblib
+import numpy as np
+
+# Load the trained model
+model = joblib.load('iris_model.pkl')
+
+# Title of the app
+st.title("Iris Flower Prediction")
+
+# Input fields for user data (features of the flower)
+sepal_length = st.slider("Sepal Length", 4.0, 8.0, 5.0)
+sepal_width = st.slider("Sepal Width", 2.0, 4.5, 3.0)
+petal_length = st.slider("Petal Length", 1.0, 7.0, 3.0)
+petal_width = st.slider("Petal Width", 0.1, 2.5, 1.0)
+
+# Make prediction when the button is pressed
+if st.button("Predict"):
+    features = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+    prediction = model.predict(features)
+    species = ['Setosa', 'Versicolor', 'Virginica']
+    st.write(f"The predicted species is: {species[prediction[0]]}")
+
+3.Train the Model and Save It Locally: -
+•First, open a terminal (or Command Prompt / PowerShell on Windows).
+•Navigate to the directory where your train_model.py file is saved.
+•Run the following command to train the model and save it as iris_model.pkl: "python train_model.py"
+
+
+4.Run the Streamlit App: -
+•In the same terminal window, navigate to the directory where your app.py file is saved.
+•Run the following command to start the Streamlit app:
+streamlit run app.py
+
+5.Access the Streamlit App: -
+After running the above command, Streamlit will start the app locally, and it will provide a link in the terminal, open the same in your browser and the app should be visible to you.
+
